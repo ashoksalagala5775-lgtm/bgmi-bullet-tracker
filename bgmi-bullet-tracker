@@ -1,0 +1,6 @@
+git clone https://github.com/<your‑username>/bgmi-bullet-tracker.git
+cd bgmi-bullet-tracker
+# Copy the index.html into this folder
+git add index.html
+git commit -m "Initial BGMI bullet tracker"
+git push
