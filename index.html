@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BGMI Bullet Tracker</title>
+  <style>
+    body { background: #121212; color: #fff; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    canvas { background: #222; border: 2px solid #555; margin-top: 20px; }
+    select, button { font-size: 16px; padding: 8px; margin: 10px; }
+  </style>
+</head>
+<body>
+  <h1>BGMI Bullet Tracker</h1>
+  <label for="gun">Select Gun:</label>
+  <select id="gun">
+    <option value="m416">M416</option>
+    <option value="akm">AKM</option>
+    <option value="ump">UMP45</option>
+  </select>
+  <button onclick="clearCanvas()">Clear</button>
+  <canvas id="canvas" width="600" height="400"></canvas>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const gunSelect = document.getElementById("gun");
+
+    const patterns = {
+      m416: { spread: 12, vertical: -22, horizontal: 0.4 },
+      akm: { spread: 18, vertical: -26, horizontal: 0.6 },
+      ump: { spread: 10, vertical: -18, horizontal: 0.3 }
+    };
+
+    let origin = { x: canvas.width / 2, y: canvas.height - 20 };
+    let bullets = [];
+
+    canvas.addEventListener("click", () => {
+      const gun = gunSelect.value;
+      const recoil = patterns[gun];
+      const last = bullets.length ? bullets[bullets.length - 1] : origin;
+      const dx = (Math.random() - 0.5) * recoil.spread + recoil.horizontal * bullets.length;
+      const dy = recoil.vertical;
+      const newPoint = { x: last.x + dx, y: last.y + dy };
+      bullets.push(newPoint);
+      draw();
+    });
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#0f0";
+      ctx.beginPath();
+      ctx.arc(origin.x, origin.y, 6, 0, 2 * Math.PI);
+      ctx.fill();
+      bullets.forEach(b => {
+        ctx.fillStyle = "#ff0";
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+    }
+
+    function clearCanvas() {
+      bullets = [];
+      draw();
+    }
+
+    draw();
+  </script>
+</body>
+</html>
